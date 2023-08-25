@@ -63,7 +63,8 @@
               "browserTarget": "Ecomm:build:production"
             },
             "development": {
-              "browserTarget": "Ecomm:build:development"
+              "browserTarget": "Ecomm:build:development",
+              "hmr": true
             }
           },
           "defaultConfiguration": "development"
@@ -94,5 +95,8 @@
         }
       }
     }
+  },
+  "cli": {
+    "analytics": "a24130d8-a8db-4e0d-95e0-2a83c01adec7"
   }
 }
