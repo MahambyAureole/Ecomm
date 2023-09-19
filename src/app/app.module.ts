@@ -9,11 +9,15 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { AccueilComponent } from './accueil/accueil.component';
 import { HttpClientModule } from '@angular/common/http';
+import { PanierComponent } from './panier/panier.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { RouterModule } from '@angular/router';
 
 @NgModule({
   declarations: [
     AppComponent,
-    AccueilComponent
+    AccueilComponent,
+    PanierComponent
   ],
   imports: [
     HttpClientModule,
@@ -21,7 +25,11 @@ import { HttpClientModule } from '@angular/common/http';
     AppRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    ToastrModule.forRoot()
+    ToastrModule.forRoot(),
+    BrowserAnimationsModule,
+    RouterModule.forRoot([
+      {path:'panier', component: PanierComponent}
+    ])
   ],
   providers: [],
   bootstrap: [AppComponent]

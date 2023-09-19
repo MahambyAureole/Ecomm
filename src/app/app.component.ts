@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+
 import { ServiceBackService } from './service-back.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
@@ -7,22 +8,18 @@ import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
 })
 export class AppComponent {
   title = 'Ecomm';
   isModalOpen = false;
-  isModalOpenModif = false;
-  isModalConfirm = false;
-  isModalPanier = false;
   ajoutProduitForm!: FormGroup;
   modifierProduitForm!: FormGroup;
-  confirmForm!: FormGroup;
-  panierForm!: FormGroup;
   imageUrl!: string;
-  
+  ouvrirListeProduit = false;
+
   //CONSTRUCTEUR
-  constructor(private service: ServiceBackService, private toastr: ToastrService,private formBuilder: FormBuilder,private http: HttpClient, private route: ActivatedRoute) {
+  constructor(private router: Router ,private service: ServiceBackService, private toastr: ToastrService,private formBuilder: FormBuilder,private http: HttpClient, private route: ActivatedRoute) {
     this.ajoutProduitForm = this.formBuilder.group({
       idProd: ['', Validators.required],
       nomProd: ['', Validators.required],
@@ -32,36 +29,10 @@ export class AppComponent {
       prixProd: ['', Validators.required],
       stockProd: ['', Validators.required]
     });
-    this.modifierProduitForm = this.formBuilder.group({
-      idProdModif: ['', Validators.required],
-      nomProdModif: ['', Validators.required],
-      descProdModif: ['', Validators.required],
-      categorieProdModif: ['', Validators.required],
-      imageProdModif: ['', Validators.required],
-      prixProdModif: ['', Validators.required],
-      stockProdModif: ['', Validators.required]
-    });
-  
   }
-
-  // FONCTION POUR AFFECTER LA VALEUR DE LA CARD AU FORMULAIRE DE MODIFICATION
-  affecterValeur(cardId: number) {
-    const idProd = document.getElementById('idProd' + cardId);
-    const nomProd = document.getElementById("nomProd" + cardId);
-    const descProd = document.getElementById("descProd" + cardId);
-    const categorieProd = document.getElementById("categorieProd" + cardId);
-    const prixProd = document.getElementById("prixProd" + cardId);
-    const stockProd = document.getElementById('stockProd' + cardId);
-    const imageProd = document.getElementById('imageProd' + cardId);
-    if (idProd !== null && imageProd !== null && nomProd !== null && descProd !== null && categorieProd !== null && prixProd !== null && stockProd !== null) {
-      this.modifierProduitForm.controls['idProdModif'].setValue(idProd.innerText);
-      this.modifierProduitForm.controls['nomProdModif'].setValue(nomProd.innerText);
-      this.modifierProduitForm.controls['descProdModif'].setValue(descProd.innerText);
-      this.modifierProduitForm.controls['categorieProdModif'].setValue(categorieProd.innerText);
-      this.modifierProduitForm.controls['prixProdModif'].setValue(prixProd.innerText.split(" ")[0]);
-      this.modifierProduitForm.controls['stockProdModif'].setValue(stockProd.innerText);
-      this.modifierProduitForm.controls['imageProdModif'].setValue(imageProd.innerText);
-    }
+  
+  listeProduit(){
+    this.ouvrirListeProduit = true;
   }
 
   // FONCTION POUR OUVRIR/FERMER LE MODALE D'AJOUT DU PRODUIT
@@ -73,43 +44,25 @@ export class AppComponent {
     this.imagePreviewUrl = null;
     this.fileInput.nativeElement.value = '';
   }
-
-  // FONCTION POUR OUVRIR/FERMER LE MODAL DE MODIFICATION DU PRODUIT
-  openModalModif() { this.isModalOpenModif = true; }
-  closeModalModif() { this.isModalOpenModif = false; }
-
-  // FONCTION POUR OUVRIR/FERMER LE MODAL DE CONFIRMATION AVANT LA SUPPRESSION
-  openModalConfirm() { this.isModalConfirm = true; }
-  closeModalConfirm() { this.isModalConfirm = false; }
-
-  // FONCTION POUR OUVRIR/FERMER LE MODAL D'AUTHENTIFICATION
-  openModalPanier() { this.isModalPanier = true; }
-  closeModalPanier() { this.isModalPanier = false; }
-
-  utilisateur: any[] = [];
   produit!: any[];
 
 
   // AFFICHAGE DE PRODUIT
-  fetchProduit() {
+fetchProduit() {
     this.service.listeProduit().subscribe(data => {
       this.produit = data;
+      
     })
   }
 
-
   ngOnInit(): void {
-    this.service.afficherUtilisateur().subscribe(data => {
-      this.utilisateur = data;
-    });
-
     this.fetchProduit();
   }
 
   // AJOUT PRODUIT
   ajoutProduit(event: Event) {
     const produit = this.ajoutProduitForm.value;
-    console.log(produit);
+    // console.log(produit);
     this.service.ajoutProduit(produit).subscribe(() => {
       this.fetchProduit();
       this.ajoutProduitForm.reset();
@@ -119,39 +72,7 @@ export class AppComponent {
     });
     event.preventDefault();
   }
-
-  // MODIFIER PRODUIT
-  modifierProduit(event: Event) {
-    const produitModif = this.modifierProduitForm.value;
-    const produit = {
-      categorieProd: produitModif.categorieProdModif,
-      descProd: produitModif.descProdModif,
-      imageProd: produitModif.imageProdModif,
-      nomProd: produitModif.nomProdModif,
-      stockProd: produitModif.stockProdModif,
-      prixProd: produitModif.prixProdModif
-
-    }
-
-    const idProdModif: number = this.modifierProduitForm.controls['idProdModif'].value;
-    this.service.modifierProduit(idProdModif, produit).subscribe(() => {
-      this.fetchProduit();
-      this.closeModalModif();
-      this.toastr.success("Modification réussi","Notification",{positionClass:"toast-top-right"});
-    });
-    event.preventDefault();
-  }
-
-  // SUPPRIMER PRODUIT
-  deleteProduit() {
-    const idProdModif: number = this.modifierProduitForm.controls['idProdModif'].value;
-
-    this.service.supprimerProduit(idProdModif).subscribe(() => {
-      this.fetchProduit();
-      this.toastr.success("Suppression réussi","Notification",{positionClass:"toast-top-right"});
-      this.closeModalConfirm();
-    });
-  }
+  
   // AFFICHAGE D'IMAGE AVANT D'AJOUTER
   @ViewChild('fileInput') fileInput!: ElementRef;
   imagePreviewUrl!: string | ArrayBuffer | null;
@@ -178,6 +99,27 @@ export class AppComponent {
         }
       );
     }
+  }
+  
+  //controle champ de texte, ne peut pas ecrire des chiffres
+  controlechampText(event: any) {
+    const inputValeur = event.target.value;
+    if (/[^A-Z-a-z]/.test(inputValeur)) {
+      const index = inputValeur.search(/A-Z-a-z/)
+      const dernierMot = inputValeur.slice(0, index);
+      event.target.value = dernierMot;
+    }
+  }
+
+  // controle champ de texte, ne peut pas ecrire des lettres
+  controleChampChiffre(event: any) {
+    const inputElement = event.target as HTMLInputElement;
+    const inputValue = inputElement.value;
+  if(/[^0-9]/.test(inputValue)){
+    const index = inputValue.search(/[^0-9]/);
+    const dernierChiffre = inputValue.slice(0, index)
+    inputElement.value = dernierChiffre;
+  }
   }
 
 }

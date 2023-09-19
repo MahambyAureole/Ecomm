@@ -1,0 +1,198 @@
+<!-- DIALOGUE DEMANDE DE CONFIRMATION AVANT SUPPRIMER PRODUIT -->
+<div class="fixed inset-0 flex items-center justify-center z-50" *ngIf="isModalConfirm">
+    <form method="dialog" class="modal-box"[formGroup]="confirmForm" (submit)="deleteProduit()">
+      <div class="alert">
+        <i class='bx bxs-error-alt'></i>
+        <span>VOULEZ VOUS LE SUPPRIMER??</span>
+        <div>
+          <button type="submit" class="btn btn-xs btn-primary">Accepter</button>
+          <button type="reset" (click)="closeModalConfirm()" class="btn btn-xs btn-error">Annuler</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  
+  <!-- FORMULAIRE D' AJOUT PRODUIT -->
+  <div class="fixed inset-0 flex items-center justify-center z-50" *ngIf="isModalOpen">
+    <form method="dialog" [formGroup]="ajoutProduitForm" (submit)="ajoutProduit($event)" class="modal-box">
+      <div class="modal-overlay"></div>
+      <div class="modal-container ">
+        <button class="modal-close btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+          (click)="closeModal()">✕</button>
+        <div class="modal-content">
+          <h3 class="font-bold text-lg text-blue-900 text-center">AJOUTER DES NOUVELLES PRODUITS</h3>
+          <input type="text" placeholder="Entrer le nom du produit" formControlName="nomProd"
+            class="input input-bordered input-success input-sm m-3 mt-5 w-full max-w-xs" />
+          <input type="text" placeholder="Donner sa description" formControlName="descProd"
+            class="input input-bordered input-success input-sm m-3 w-full max-w-xs" />
+          <input type="text" placeholder="Catégorie" formControlName="categorieProd"
+            class="input input-bordered input-success input-sm m-3 w-full max-w-xs" />
+          <input type="text" placeholder="Prix" formControlName="prixProd"
+            class="input input-bordered input-success input-sm m-3 w-full max-w-xs" />
+          <input type="text" placeholder="stock" formControlName="stockProd"
+            class="input input-bordered input-success input-sm m-3 w-full max-w-xs" />
+          <input type="file" formControlName="imageProd" (change)="onFileSelected($event)" accept="image/*"
+            class="file-input file-input-bordered file-input-sm m-3 file-input-accent w-full max-w-xs hidden" #fileInput />
+          <div  class="w-32 h-32 overflow-hidden m-3">
+            <button type="button" (click)="fileInput.click()" class="btn btn-outline btn-primary btn-xs rounded">Select image</button>
+            <img [src]="imagePreviewUrl" alt="" class="rounded shadow w-24 h-24 max-w-full mt-1 max-h-full object-cover">
+          </div>
+        </div>
+        <div class="modal-action">
+          <button type="submit" class="btn btn-xs bg-blue-900">AJOUTER</button>
+          <button class="btn btn-xs btn-error" (click)="closeModal()">ANNULER</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  
+  <!-- FORMULAIRE D'AUTHENTIFICATION UTILISATEUR -->
+  <div class="fixed inset-0 flex items-center justify-center z-50" *ngIf="isModalPanier">
+    <form method="dialog" [formGroup]="panierForm" class="modal-box" >
+      <div class="modal-overlay"></div>
+      <div class="modal-container ">
+        <button class="modal-close btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+          (click)="closeModalPanier()">✕</button>
+        <div class="modal-content">
+          <h3 class="font-bold text-lg text-blue-900 text-center">IDENTIFIEZ-VOUS S'IL VOUS PLAIT!!</h3>
+          <input type="text" id="nameUtil" placeholder="ENTRER VOTRE NOM D'UTILISATEUR" formControlName="nomUtilPan"
+            class="input input-bordered input-success input-sm m-3 ml-16 mt-5 w-full max-w-xs" />
+          <input type="password" placeholder="ENTRER VOTRE MOT DE PASSE" formControlName="motPassePan"
+            class="input input-bordered input-success input-sm m-3 ml-16 w-full max-w-xs" /> <br>
+          <a class="link link-primary">Vous n'avez pas des comptes? Cliquez ici!!</a>
+        </div>
+        <div class="modal-action">
+          <button (click)="openModalAjoutPanier();closeModalPanier()" class="btn btn-xs bg-blue-900">SE CONNECTER</button>
+          <button class="btn btn-xs btn-error" (click)="closeModalPanier()">ANNULER</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  
+  <!-- AFFICHAGE DES PRODUITS -->
+  <div class="mt-20 grid grid-cols-4 space-x-3 space-y-3 m-3 rounded-md" *ngIf="produit">
+    <div class="col-span-1 mt-3 ms-3 card pt-5 h-100 w-70 bg-gray-300" *ngFor="let prod of produit, let i = index">
+      <figure><img class="w-3/4" [src]="imageUrl" alt="{{prod.descProd}}" /></figure>
+      <div class="card-body">
+        <h2 class="card-title"
+          style="position: absolute;width: 1px;height: 1px;padding: 0;margin: -1px;overflow: hidden;clip: rect(0,0,0,0);border: 0;"
+          id="idProd{{i}}">{{prod.idProd}}</h2>
+        <h2 class="card-title justify-center" id="nomProd{{i}}">{{prod.nomProd}}</h2>
+        <div class="overflow-x-auto">
+          <div class="justify-center">
+            <table class="table text-xs p-1 border-4 w-full z-0">
+              <tr>
+                <td class="font-bold">Description</td>
+                <td id="descProd{{i}}" class="z-0">{{prod.descProd}}</td>
+              </tr>
+              <tr>
+                <td class="font-bold">Categorie</td>
+                <td id="categorieProd{{i}}" class="z-0">{{prod.categorieProd}}</td>
+              </tr>
+              <tr>
+                <td class="font-bold">Prix</td>
+                <td id="prixProd{{i}}" class="z-0">{{prod.prixProd}} Ariary</td>
+              </tr>
+              <tr>
+                <td id="stockProd{{i}}"
+                  style="position: absolute;width: 1px;height: 1px;padding: 0;margin: -1px;overflow: hidden;clip: rect(0,0,0,0);border: 0;">
+                  {{prod.stockProd}}</td>
+              </tr>
+              <tr>
+                <td id="imageProd{{i}}"
+                  style="position: absolute;width: 1px;height: 1px;padding: 0;margin: -1px;overflow: hidden;clip: rect(0,0,0,0);border: 0;">
+                  {{prod.imageProd}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="card-actions justify-end">
+        <button class="btn btn-sm active:btn-secondary hover:bg-sky-800 bg-sky-800 m-3" (click)="affecterValeur(i); openModalModif()">Action</button>
+        <button class="btn btn-sm bg-sky-800 hover:bg-sky-800 active:btn-secondary m-3 animate-flash" (click)="openModalPanier(); affecterValeurProdPan(i)">Ajouter au panier</button>
+      </div>
+    </div>
+  </div>
+  <a routerLink="/panier" routerLinkActive="active" ariaCurrentWhenActive="page">Aller au panier </a>
+  
+  <!-- FORMULAIRE DE MODIFICATION DU PRODUIT -->
+  <div class="fixed inset-0 flex items-center justify-center z-50" *ngIf="isModalOpenModif">
+    <form method="dialog" [formGroup]="modifierProduitForm" class="modal-box">
+      <div class="modal-overlay"></div>
+      <div class="modal-container " *ngIf="produit">
+        <button class="modal-close btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+          (click)="closeModalModif()">✕</button>
+        <div class="modal-content">
+          <div class="inline-block w-fit">
+            <label class="label-text font-bold ml-1 mt-0">Numero:</label>
+          </div>
+          <div class=" inline-block w-fit">
+            <input type="text" id="idProdModif" formControlName="idProdModif" readonly class="input" />
+          </div>
+          <label class="label">
+            <span class="label-text font-bold">Nom du produit:</span>
+          </label>
+          <input type="text" formControlName="nomProdModif" class="input input-bordered input-sm max-w-xs w-full ml-3 input-success" />
+          <label class="label">
+            <span class="label-text font-bold">Description:</span>
+          </label>
+          <input type="text" formControlName="descProdModif"
+            class="textarea textarea-success input-sm ml-3 w-full max-w-xs" />
+          <label class="label">
+            <span class="label-text font-bold">Catégorie:</span>
+          </label>
+          <input type="text" formControlName="categorieProdModif"
+            class="input input-bordered input-success input-sm ml-3 w-full max-w-xs" />
+          <label class="label">
+            <span class="label-text font-bold">Image:</span>
+          </label>
+          <input type="text" formControlName="imageProdModif"
+          class="input input-bordered input-success input-sm ml-3 w-full max-w-xs" />
+          <input type="file" accept="image/*"
+            class="file-input file-input-bordered file-input-sm m-3 file-input-accent w-full max-w-xs" />
+          <label class="label">
+            <span class="label-text font-bold">Prix(Ariary):</span>
+          </label>
+          <input type="text" formControlName="prixProdModif"
+            class="input input-bordered input-success input-sm ml-3 w-full max-w-xs" />
+          <label class="label">
+            <span class="label-text font-bold">Stock disponible:</span>
+          </label>
+          <input type="text" formControlName="stockProdModif"
+            class="input input-bordered input-success input-sm m-3 w-full max-w-xs" />
+        </div>
+        <div class="modal-action">
+          <button (click)="modifierProduit($event)" class="btn btn-xs bg-blue-900">MODIFIER</button>
+          <button  (click)="openModalConfirm()" class="btn btn-xs btn-error">SUPPRIMER</button>
+        </div>
+      </div>
+    </form>
+  </div>
+  
+  <!-- AJOUT DE PRODUIT AU PANIER -->
+  <div class="fixed inset-0 flex items-center justify-center z-50" *ngIf="isModalAjoutPanier">
+    <form method="dialog" [formGroup]="ajoutPanierForm" (submit)="ajoutPanier()" class="modal-box">
+      <div class="modal-overlay"></div>
+      <div class="modal-container ">
+        <button class="modal-close btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+          (click)="closeModalAjoutPanier()">✕</button>
+        <div class="modal-content">
+          <h3 class="font-bold text-lg text-blue-900 text-center">REMPLIR VOTRE PANIER</h3>
+          <input type="text" readonly formControlName="nomProdPan"
+            class="input input-bordered input-success input-sm m-3 mt-5 w-full max-w-xs" />
+          <!-- <input type="text" readonly formControlName="nomUtilisateurPan"
+            class="input input-bordered input-success input-sm m-3 w-full max-w-xs" /> -->
+          <input type="text" formControlName="idProdPan" readonly
+            class="input input-bordered input-success input-sm m-3 w-full max-w-xs" />
+          <input type="text" formControlName="idUtilPan" readonly
+            class="input input-bordered input-success input-sm m-3 w-full max-w-xs" />
+          <input type="number" placeholder="Quantité Produit" formControlName="qttProdPan"
+            class="input input-bordered input-success input-sm m-3 w-full max-w-xs" />
+        </div>
+        <div class="modal-action">
+          <button type="submit" (click)="listePanier()" class="btn btn-xs bg-blue-900">CONFIRMER</button>
+          <button class="btn btn-xs btn-error" (click)="closeModalAjoutPanier()">ANNULER</button>
+        </div>
+      </div>
+    </form>
+  </div>
