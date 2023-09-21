@@ -11,6 +11,7 @@ export class ServiceBackService {
 
   private apiUrl = 'http://localhost:8080';
   public productAdded = new Subject<any>();
+  public panierAjouter = new Subject<any>();
   
   constructor(private http: HttpClient) { }
   
@@ -43,6 +44,12 @@ export class ServiceBackService {
 
   // CONNEXION AJOUT ENTRE PANIER BACK ET FRONT
   ajoutPanier(panier: any): Observable<any>{
-    return this.http.post<any>(`${this.apiUrl}/ajoutPanier`, panier);
+    return this.http.post<any>(`${this.apiUrl}/ajoutPanier`, panier).pipe(
+      tap(() => this.panierAjouter.next(panier))
+    );
+  }
+
+  afficherPanier(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/listPanier`);
   }
 }

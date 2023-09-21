@@ -7,7 +7,9 @@
       </label>
       <ul tabindex="0"
         class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow  bg-base-300 text-sky-950 rounded-box w-52">
-        <li class="rounded-md active:bg-secondary hover:bg-sky-800 hover:text-white"><a>Produits</a></li>
+        <li class="rounded-md active:bg-secondary hover:bg-sky-800 hover:text-white">
+          <a routerLink="/accueil" routerLinkActive="active" ariaCurrentWhenActive="page">Produits</a>
+        </li>
         <li class="rounded-md active:bg-secondary hover:bg-sky-800 hover:text-white"><a>Contact</a></li>
         <li class="rounded-md active:bg-secondary hover:bg-sky-800 hover:text-white"><a href="#test">A Propos</a></li>
       </ul>
@@ -29,6 +31,7 @@
   </div>
 </div>
 
+
 <!-- FORMULAIRE D' AJOUT PRODUIT -->
 <div class="fixed inset-0 flex items-center justify-center z-50" *ngIf="isModalOpen">
   <form method="dialog" [formGroup]="ajoutProduitForm" (submit)="ajoutProduit($event)" class="modal-box">
@@ -39,19 +42,22 @@
       <div class="modal-content">
         <h3 class="font-bold text-lg text-blue-900 text-center">AJOUTER DES NOUVELLES PRODUITS</h3>
         <input type="text" placeholder="Entrer le nom du produit" formControlName="nomProd"
-          class="input input-bordered input-success input-sm m-3 mt-5 w-full max-w-xs" (input)="controlechampText($event)" />
+          class="input input-bordered input-success input-sm m-3 mt-5 w-full max-w-xs"
+          (input)="controlechampText($event)" />
         <input type="text" placeholder="Donner sa description" formControlName="descProd"
           class="input input-bordered input-success input-sm m-3 w-full max-w-xs" (input)="controlechampText($event)" />
         <input type="text" placeholder="Catégorie" formControlName="categorieProd"
-          class="input input-bordered input-success input-sm m-3 w-full max-w-xs" (input)="controlechampText($event)"/>
+          class="input input-bordered input-success input-sm m-3 w-full max-w-xs" (input)="controlechampText($event)" />
         <input type="text" placeholder="Prix" formControlName="prixProd" (input)="controleChampChiffre($event)"
-          class="input input-bordered input-success input-sm m-3 w-full max-w-xs"  />
+          class="input input-bordered input-success input-sm m-3 w-full max-w-xs" />
         <input type="text" placeholder="stock" formControlName="stockProd" (input)="controleChampChiffre($event)"
-          class="input input-bordered input-success input-sm m-3 w-full max-w-xs"  />
+          class="input input-bordered input-success input-sm m-3 w-full max-w-xs" />
         <input type="file" formControlName="imageProd" (change)="onFileSelected($event)" accept="image/*"
-          class="file-input file-input-bordered file-input-sm m-3 file-input-accent w-full max-w-xs hidden" #fileInput />
-        <div  class="w-32 h-32 overflow-hidden m-3">
-          <button type="button" (click)="fileInput.click()" class="btn btn-outline btn-primary btn-xs rounded">Select image</button>
+          class="file-input file-input-bordered file-input-sm m-3 file-input-accent w-full max-w-xs hidden"
+          #fileInput />
+        <div class="w-32 h-32 overflow-hidden m-3">
+          <button type="button" (click)="fileInput.click()" class="btn btn-outline btn-primary btn-xs rounded">Select
+            image</button>
           <img [src]="imagePreviewUrl" alt="" class="rounded shadow w-24 h-24 max-w-full mt-1 max-h-full object-cover">
         </div>
       </div>
@@ -62,44 +68,21 @@
     </div>
   </form>
 </div>
-<!--<div class="overflow-x-auto">
-  <table class="table table-zebra">
-    <thead>
-      <tr>
-        <th></th>
-        <th>Nom</th>
-        <th>Prenom</th>
-        <th>Adresse Mail</th>
-        <th>Mot de Passe</th>
-        <th>Adresse Utilisateur</th>
-        <th>Telephone</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let utilisateurs of utilisateur" class="hover">
-        <th>{{ utilisateurs.idUtil }}</th>
-        <td>{{utilisateurs.nomUtil}}</td>
-        <td>{{utilisateurs.prenomUtil}}</td>
-        <td>{{utilisateurs.adrMail}}</td>
-        <td>{{utilisateurs.motPasse}}</td>
-        <td>{{utilisateurs.adrUtil}}</td>
-        <td>{{utilisateurs.numPhone}}</td>
-      </tr>
-    </tbody>
-  </table>
-</div>-->
-<a routerLink="/panier">panier</a>
+
+
+<!-- DIV CONTENU DE LA PAGE -->
 <div class="container">
   <router-outlet></router-outlet>
 </div>
 
+
 <!-- FOOTER DE L'APPLICATION -->
-<footer class="footer p-10 bg-blue-900 text-white">
+<footer class="footer w-screen p-10 bg-blue-900 text-white">
   <div>
     <span class="footer-title">Contact</span>
     <a class="link link-hover"><i class='bx bx-envelope bx-xm'></i>rasolonantenaim43@gmail.com</a>
     <a class="link link-hover"><i class='bx bxs-phone bx-xm'></i>+261 38 12 219 90</a>
-    <a class="link link-hover"><i class='bx bx-current-location bx-xm'></i>Sonierana Fianarantsoa</a>
+    <a class="link link-hover"><i class='bx bx-map bx-xm'></i>Sonierana Fianarantsoa</a>
   </div>
   <div>
     <span class="footer-title">A Propos</span>
@@ -126,4 +109,3 @@
     </div>
   </div>
 </footer>
-<router-outlet></router-outlet>

@@ -1,26 +1,22 @@
-<div class="overflow-x-auto">
-  <table class="table table-zebra">
-    <thead>
-      <tr>
-        <th></th>
-        <th>Nom</th>
-        <th>Prenom</th>
-        <th>Adresse Mail</th>
-        <th>Mot de Passe</th>
-        <th>Adresse Utilisateur</th>
-        <th>Telephone</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr  class="hover">
-        <th>tady vy</th>
-        <td>tady vy</td>
-        <td>tady vy</td>
-        <td>tady vy</td>
-        <td>tady vy</td>
-        <td>tady vy</td>
-        <td>tady vy</td>
-      </tr>
-    </tbody>
-  </table>
+<div class="m-5 mt-20">
+  <div class="overflow-x-auto flex justify-center">
+    <table class="table table-zebra table-auto">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Utilisateur</th>
+          <th>Produit</th>
+          <th>Quantité du produit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let paniers of panier" class="hover">
+          <th>{{paniers.idPanier}}</th>
+          <td class="text-center align-middle">{{paniers.idUtil}}</td>
+          <td class="text-center align-middle">{{paniers.idProd}}</td>
+          <td class="text-center align-middle">{{paniers.qttPanier}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>

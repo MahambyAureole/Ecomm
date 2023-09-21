@@ -24,15 +24,9 @@ export class AccueilComponent {
   panierForm!: FormGroup;
   ajoutPanierForm!: FormGroup;
   imageUrl!: string;
-  ouvrirListePanier = false;
-  isAccueilComponent= true;
 
-  listePanier() {
-    this.ouvrirListePanier = true;
-  }
-  
   //CONSTRUCTEUR
-  constructor(private router: Router, private service: ServiceBackService, private toastr: ToastrService,private formBuilder: FormBuilder,private http: HttpClient, private route: ActivatedRoute) {
+  constructor(private router: Router, private service: ServiceBackService, private toastr: ToastrService, private formBuilder: FormBuilder, private http: HttpClient, private route: ActivatedRoute) {
     this.ajoutProduitForm = this.formBuilder.group({
       idProd: ['', Validators.required],
       nomProd: ['', Validators.required],
@@ -64,7 +58,7 @@ export class AccueilComponent {
       nomUtilPan: ['', Validators.required],
       motPassePan: ['', Validators.required]
     });
-  
+
   }
 
   // FONCTION POUR AFFECTER LA VALEUR DE LA CARD AU FORMULAIRE DE MODIFICATION
@@ -86,24 +80,20 @@ export class AccueilComponent {
       this.modifierProduitForm.controls['imageProdModif'].setValue(imageProd.innerText);
     }
   }
-  
-  navigateToPanier() {
-    this.router.navigate(['/panier']);
-  }
 
-  affecterValeurProdPan(card: number){
+  affecterValeurProdPan(card: number) {
     const idProdPan = document.getElementById('idProd' + card);
     const nomProdPan = document.getElementById('nomProd' + card);
-    
-    if(idProdPan != null && nomProdPan != null){
+
+    if (idProdPan != null && nomProdPan != null) {
       this.ajoutPanierForm.controls['idProdPan'].setValue(idProdPan.innerText);
       this.ajoutPanierForm.controls['nomProdPan'].setValue(nomProdPan.innerText);
     }
   }
-  
-  affectValeurUtilPan(){
+
+  affectValeurUtilPan() {
     const idUtilPan = this.panierForm.value.nomUtilPan
-    if( idUtilPan != null){
+    if (idUtilPan != null) {
       this.ajoutPanierForm.controls['idUtilPan'].setValue(idUtilPan);
     }
   }
@@ -119,13 +109,13 @@ export class AccueilComponent {
   }
 
   // FONCTION POUR OUVRIR/FERMER LE MODAL DE MODIFICATION DU PRODUIT
-  openModalModif() { this.isModalOpenModif = true;}
+  openModalModif() { this.isModalOpenModif = true; }
   closeModalModif() { this.isModalOpenModif = false; }
 
   // FONCTION POUR OUVRIR/FERMER LE MODAL DE CONFIRMATION AVANT LA SUPPRESSION
-  openModalConfirm() { 
+  openModalConfirm() {
     this.isModalOpenModif = false;
-    this.isModalConfirm = true; 
+    this.isModalConfirm = true;
   }
   closeModalConfirm() { this.isModalConfirm = false; }
 
@@ -135,11 +125,11 @@ export class AccueilComponent {
 
   // FONCTION POUR OUVRIR/FERMER LE MODAL D'AJOUT PANIER
 
-  openModalAjoutPanier(){
+  openModalAjoutPanier() {
     this.affectValeurUtilPan();
     this.isModalAjoutPanier = true;
   }
-  closeModalAjoutPanier(){this.isModalAjoutPanier= false;}
+  closeModalAjoutPanier() { this.isModalAjoutPanier = false; }
 
   utilisateur: any[] = [];
   produit!: any[];
@@ -155,14 +145,11 @@ export class AccueilComponent {
 
 
   ngOnInit(): void {
-    // this.service.afficherUtilisateur().subscribe(data => {
-    //   this.utilisateur = data;
-    // });
 
     this.fetchProduit();
     this.service.productAdded.subscribe(() => {
       this.fetchProduit();
-      });
+    });
   }
 
   // AJOUT PRODUIT
@@ -174,31 +161,32 @@ export class AccueilComponent {
       this.ajoutProduitForm.reset();
       this.imagePreviewUrl = null;
       this.fileInput.nativeElement.value = '';
-      this.toastr.success("Produit ajouté avec succès","Notification",{positionClass:"toast-top-right",timeOut:1000});
+      this.toastr.success("Produit ajouté avec succès", "Notification", { positionClass: "toast-top-right", timeOut: 1000 });
     });
     event.preventDefault();
   }
 
   // AJOUT PANIER
-  ajoutPanier(){
+  ajoutPanier() {
     const panier = this.ajoutPanierForm.value;
     const panierAjout = {
-      idUtil : panier.idUtilPan,
-      idProd : panier.idProdPan,
-      qttPanier : panier.qttProdPan
+      idUtil: panier.idUtilPan,
+      idProd: panier.idProdPan,
+      qttPanier: panier.qttProdPan
     }
-    
-    this.service.ajoutPanier(panierAjout).subscribe((response)=>{
+
+    this.service.ajoutPanier(panierAjout).subscribe(() => {
+      this.listePanier();
       this.ajoutPanierForm.reset();
-      console.log("Produit ajouter dans votre panier");
-      this.router.navigate(['/panier']);
-      
-    },
-      (err)=>{
-        console.log(err);
-        
-      }
-    )
+    
+    })
+  }
+
+  //Liste panier
+  listePanier(){
+    this.service.afficherPanier().subscribe(data=>{
+      this.panier = data;
+    })
   }
 
   // MODIFIER PRODUIT
@@ -218,7 +206,7 @@ export class AccueilComponent {
     this.service.modifierProduit(idProdModif, produit).subscribe(() => {
       this.fetchProduit();
       this.closeModalModif();
-      this.toastr.success("Modification réussi","Notification",{positionClass:"toast-top-right"});
+      this.toastr.success("Modification réussi", "Notification", { positionClass: "toast-top-right", timeOut: 1000 });
     });
     event.preventDefault();
   }
@@ -229,7 +217,7 @@ export class AccueilComponent {
 
     this.service.supprimerProduit(idProdModif).subscribe(() => {
       this.fetchProduit();
-      this.toastr.success("Suppression réussi","Notification",{positionClass:"toast-top-right"});
+      this.toastr.success("Suppression réussi", "Notification", { positionClass: "toast-top-right", timeOut: 1000 });
       this.closeModalConfirm();
     });
   }
@@ -248,7 +236,7 @@ export class AccueilComponent {
 
       reader.readAsDataURL(file);
       const formData = new FormData();
-      formData.append('file',file);
+      formData.append('file', file);
 
       this.http.post<any>('http://localhost:8080/api/images/upload', formData).subscribe(
         (response) => {

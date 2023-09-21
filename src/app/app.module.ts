@@ -12,12 +12,14 @@ import { HttpClientModule } from '@angular/common/http';
 import { PanierComponent } from './panier/panier.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
+import { UtilisateurComponent } from './utilisateur/utilisateur.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     AccueilComponent,
-    PanierComponent
+    PanierComponent,
+    UtilisateurComponent
   ],
   imports: [
     HttpClientModule,
@@ -28,7 +30,11 @@ import { RouterModule } from '@angular/router';
     ToastrModule.forRoot(),
     BrowserAnimationsModule,
     RouterModule.forRoot([
-      {path:'panier', component: PanierComponent}
+      {path:'accueil', component: AccueilComponent},
+      {path:'panier', component: PanierComponent},
+      {path:'',redirectTo:'accueil', pathMatch:'full'},
+      {path:'**', redirectTo: 'accueil', pathMatch: 'full'},
+      {path:'utilisateur', component: UtilisateurComponent}
     ])
   ],
   providers: [],
