@@ -2,6 +2,38 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+@keyframes slide-in {
+  from {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-out {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+.custom-toast {
+  animation: slidein 0.6s ease-in;
+}
+
+.custom-toast .toast {
+  animation: slide-in 0.6s ease-in;
+}
+
+.custom-toast .toast.fade {
+  animation: slide-out 0.6s ease-in;
+}
 .toast-center-center {
     top: 50%;
     left: 50%;
@@ -191,3 +223,4 @@
       width: 25em;
     }
   }
+  

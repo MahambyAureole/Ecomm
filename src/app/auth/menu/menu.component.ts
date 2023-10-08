@@ -1,17 +1,17 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-
-import { ServiceBackService } from '../service-back.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { HttpClient } from '@angular/common/http';
+import { ServiceBackService } from 'src/app/service-back.service';
+
 
 @Component({
-  selector: 'app-accueil',
-  templateUrl: './accueil.component.html',
-  styleUrls: ['./accueil.component.css']
+  selector: 'app-menu',
+  templateUrl: './menu.component.html',
+  styleUrls: ['./menu.component.css']
 })
-export class AccueilComponent {
+export class MenuComponent {
   title = 'Ecomm';
   isModalOpen = false;
   isModalOpenModif = false;
@@ -24,6 +24,11 @@ export class AccueilComponent {
   panierForm!: FormGroup;
   ajoutPanierForm!: FormGroup;
   imageUrl!: string;
+  searchInput!: any;
+  utilisateur: any[] = [];
+  produit!: any[];
+  panier!: any[];
+
 
   //CONSTRUCTEUR
   constructor(private router: Router, private service: ServiceBackService, private toastr: ToastrService, private formBuilder: FormBuilder, private http: HttpClient, private route: ActivatedRoute) {
@@ -131,10 +136,6 @@ export class AccueilComponent {
   }
   closeModalAjoutPanier() { this.isModalAjoutPanier = false; }
 
-  utilisateur: any[] = [];
-  produit!: any[];
-  panier!: any[];
-
 
   // AFFICHAGE DE PRODUIT
   fetchProduit() {
@@ -174,17 +175,29 @@ export class AccueilComponent {
       idProd: panier.idProdPan,
       qttPanier: panier.qttProdPan
     }
-
     this.service.ajoutPanier(panierAjout).subscribe(() => {
       this.listePanier();
       this.ajoutPanierForm.reset();
-    
+
     })
   }
 
+  // RECHERCHE PRODUITS
+  searchProducts() {
+    if (!this.searchInput) {
+      return this.fetchProduit();
+    }
+
+    this.produit = this.produit.filter(prod =>
+      prod.nomProd.toLowerCase().includes(this.searchInput.toLowerCase()) ||
+      prod.descProd.toLowerCase().includes(this.searchInput.toLowerCase()) ||
+      prod.categorieProd.toLowerCase().includes(this.searchInput.toLowerCase())
+    );
+  }
+
   //Liste panier
-  listePanier(){
-    this.service.afficherPanier().subscribe(data=>{
+  listePanier() {
+    this.service.afficherPanier().subscribe(data => {
       this.panier = data;
     })
   }

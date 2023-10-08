@@ -1,0 +1,38 @@
+<div class="m-5 mt-20">
+    <h1 class="text-center mb-3  text-2xl font-serif">Listes des produits dans votre panier</h1>
+    <div class="overflow-x-auto flex justify-center">
+      <table class="table table-zebra table-auto w-36 z-0">
+        <thead>
+          <tr>
+            <th></th>
+            <th class="w-[4cm]">Utilisateur</th>
+            <th>Produit</th>
+            <th>Quantité</th>
+            <th>Prix Unitaire(Ariary)</th>
+            <th>Total(Ariary)</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let listepan of listePanier" class="hover">
+            <th class="hidden">{{listepan.idPanier}}</th>
+            <td class="text-center align-middle">{{listepan.nomUtil}} {{listepan.prenomUtil}}</td>
+            <td class="text-center align-middle">{{listepan.nomProd}}</td>
+            <td class="text-center align-middle">{{listepan.qttPanier}}</td>
+            <td class="text-center align-middle">{{listepan.prixProd}}</td>
+            <td class="text-center align-middle">{{listepan.total}}</td>
+            <td>
+                <button class="btn btn-ghost btn-circle"><i class='bx bx-refresh bx-xm'></i></button>
+                <button class="btn btn-ghost btn-circle"><i class='bx bxs-trash bx-xm'></i></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <tfoot >
+      <p class="font-bold ml-40 mt-2 font-serif"> Net à payer: {{somme}} Ariary</p>
+    </tfoot>
+    <div class="form-control mt-6 justify-center">
+      <button class="btn btn-outline btn-sm justify-center">Acheter</button>
+    </div>
+  </div>

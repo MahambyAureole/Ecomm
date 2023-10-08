@@ -1,26 +1,32 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { ServiceBackService } from './service-back.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { HttpClient } from '@angular/common/http';
+import { ServiceBackService } from '../service-back.service';
+import { Location } from '@angular/common';
+import { UtilisateurService } from '../service/utilisateur.service';
+
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css'],
+  selector: 'app-admin',
+  templateUrl: './admin.component.html',
+  styleUrls: ['./admin.component.css']
 })
-export class AppComponent {
-  title = 'Ecomm';
+export class AdminComponent {
   isModalOpen = false;
   ajoutProduitForm!: FormGroup;
   modifierProduitForm!: FormGroup;
   imageUrl!: string;
   ouvrirListeProduit = false;
+  isDeconnexion= false;
+  confirmForm!: FormGroup;
   file: File | undefined;
+  nomAdmin$ = this.utilservice.getAdrMail();
+  produit!: any[];
 
-  //CONSTRUCTEUR
-  constructor(private router: Router ,private service: ServiceBackService, private toastr: ToastrService,private formBuilder: FormBuilder,private http: HttpClient, private route: ActivatedRoute) {
+
+  constructor(private router: Router, private location: Location,private utilservice:UtilisateurService, private service: ServiceBackService, private toastr: ToastrService, private formBuilder: FormBuilder, private http: HttpClient, private route: ActivatedRoute) {
     this.ajoutProduitForm = this.formBuilder.group({
       idProd: ['', Validators.required],
       nomProd: ['', Validators.required],
@@ -31,8 +37,8 @@ export class AppComponent {
       stockProd: ['', Validators.required]
     });
   }
-  
-  listeProduit(){
+
+  listeProduit() {
     this.ouvrirListeProduit = true;
   }
 
@@ -45,51 +51,77 @@ export class AppComponent {
     this.imagePreviewUrl = null;
     this.fileInput.nativeElement.value = '';
   }
-  produit!: any[];
-
+  openModalConfirm() {
+    this.isDeconnexion = true;
+  }
+  closeConfirm(){
+    this.isDeconnexion = false;
+  }
 
   // AFFICHAGE DE PRODUIT
-fetchProduit() {
+  fetchProduit() {
     this.service.listeProduit().subscribe(data => {
       this.produit = data;
-      
+
     })
+  }
+
+  deconnecter() {
+    this.router.navigateByUrl("authentification");
+    this.location.replaceState("authentification")
   }
   getNomImage(event: any): void {
     if (this.file) {
       const fileName = this.file.name;
+      const formData = new FormData();
+      formData.append('file', this.file);
+      this.http.post('http://localhost:8080/uploadFile', formData)
+          .subscribe(res => {
+            console.log(res);
+          });
       console.log('Nom du fichier sélectionné :', fileName);
     } else {
-        console.log("Aucun fichier sélectionné");
+      console.log("Aucun fichier sélectionné");
     }
   }
 
   ngOnInit(): void {
+    this.nomAdmin$.subscribe();
     this.fetchProduit();
   }
 
   // AJOUT PRODUIT
   ajoutProduit(event: Event) {
-    const produit = this.ajoutProduitForm.value;
-    const imageProd = produit.imageProd;
-    console.log(imageProd);
-    
+    if (this.file){
+      const fileName = this.file.name;
+      const produitA = this.ajoutProduitForm.value;
+      const produit = {
+        nomProd: produitA.nomProd,
+        descProd:produitA.descProd,
+        categorieProd:produitA.categorieProd,
+        imageProd: fileName,
+        prixProd:produitA.prixProd,
+        stockProd:produitA.stockProd
+      }
+      this.service.ajoutProduit(produit).subscribe(() => {
+        this.fetchProduit();
+        this.getNomImage(event);
+        this.ajoutProduitForm.reset();
+        this.imagePreviewUrl = null;
+        this.fileInput.nativeElement.value = '';
+        this.toastr.success("Produit ajouté avec succès", "Notification", { progressBar: true, progressAnimation:"increasing", positionClass: "toast-top-right", timeOut: 3000 });
+      });
+    }
+
     // console.log(produit);
-    this.service.ajoutProduit(produit).subscribe(() => {
-      this.fetchProduit();
-      this.ajoutProduitForm.reset();
-      this.imagePreviewUrl = null;
-      this.fileInput.nativeElement.value = '';
-      this.toastr.success("Produit ajouté avec succès","Notification",{positionClass:"toast-top-right",timeOut:1000});
-    });
     event.preventDefault();
   }
-  
+
   // AFFICHAGE D'IMAGE AVANT D'AJOUTER
   @ViewChild('fileInput') fileInput!: ElementRef;
   imagePreviewUrl!: string | ArrayBuffer | null;
   onFileSelected(event: any) {
-    this.file  = event.target.files?.[0];
+    this.file = event.target.files?.[0];
 
     if (this.file) {
       const reader = new FileReader();
@@ -99,17 +131,14 @@ fetchProduit() {
       }
 
       reader.readAsDataURL(this.file);
-      const formData = new FormData();
-      formData.append('file',this.file);
     }
-    
   }
-  
+
   //controle champ de texte, ne peut pas ecrire des chiffres
   controlechampText(event: any) {
     const inputValeur = event.target.value;
-    if (/[^A-Z-a-z]/.test(inputValeur)) {
-      const index = inputValeur.search(/A-Z-a-z/)
+    if (/[^A-Za-z0-9 ]/.test(inputValeur)) {
+      const index = inputValeur.search(/A-Za-z0-9 /)
       const dernierMot = inputValeur.slice(0, index);
       event.target.value = dernierMot;
     }
@@ -119,11 +148,10 @@ fetchProduit() {
   controleChampChiffre(event: any) {
     const inputElement = event.target as HTMLInputElement;
     const inputValue = inputElement.value;
-  if(/[^0-9]/.test(inputValue)){
-    const index = inputValue.search(/[^0-9]/);
-    const dernierChiffre = inputValue.slice(0, index)
-    inputElement.value = dernierChiffre;
+    if (/[^0-9]/.test(inputValue)) {
+      const index = inputValue.search(/[^0-9]/);
+      const dernierChiffre = inputValue.slice(0, index)
+      inputElement.value = dernierChiffre;
+    }
   }
-  }
-
 }

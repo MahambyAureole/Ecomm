@@ -10,7 +10,7 @@ export class PanierService {
   constructor(private http: HttpClient) { }
 
   // CONNEXION AFFICHAGE PANIER ENTRE BACK ET FRONT)
-  afficherPanier(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/listPanier`);
+  afficherPanier(adrMail:any): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/listPan/${adrMail}`);
   }
 }

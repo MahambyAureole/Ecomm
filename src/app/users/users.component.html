@@ -1,0 +1,83 @@
+<div class=" fixed top-0 z-10 navbar bg-blue-900 text-white">
+    <div class="navbar-start">
+        <div class="dropdown">
+            <label tabindex="0" class="btn btn-ghost btn-circle">
+                <i class='bx bx-menu-alt-left bx-sm'></i>
+            </label>
+            <ul tabindex="0"
+                class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow  bg-base-300 text-sky-950 rounded-box w-36">
+                <li class="rounded-md active:bg-secondary hover:bg-sky-800 hover:text-white">
+                    <a routerLink="/utilisateur">Produits</a>
+                </li>
+                <li class="rounded-md active:bg-secondary hover:bg-sky-800 hover:text-white">
+                    <a routerLink="/utilisateur/panier">Panier</a>
+                </li>
+                <li class="rounded-md active:bg-secondary hover:bg-sky-800 hover:text-white">
+                    <a routerLink="/utilisateur/coms">Commentaire</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="navbar-center">
+        <a class="btn btn-ghost normal-case text-xl">UNIT-COMMERCE</a>
+    </div>
+    <div class="navbar-end">
+        <span class="mr-14">
+            <i class="hidden" id="users">{{idUtil$ | async}}</i>
+            <i class="bx bx-user bx-xm">{{adrMail$ | async}}</i>
+        </span>
+        <button (click)="openParms()" class="btn btn-ghost btn-xm">
+            <i class='bx bxs-cog bx-sm'></i>
+        </button>
+        <button class="btn btn-ghost btn-circle" (click)="openModalConfirm()">
+            <i class='bx bx-log-out-circle bx-sm'></i>
+        </button>
+    </div>
+</div>
+<!-- FORMULAIRE D' AJOUT PRODUIT -->
+<div class="fixed inset-0 flex items-center justify-center z-50" *ngIf="isModalParms">
+    <form method="dialog" [formGroup]="parmsForm" class="modal-box">
+        <div class="modal-overlay"></div>
+        <div class="modal-container ">
+            <button class="modal-close btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                (click)="closeParams()">✕</button>
+            <div class="modal-content">
+                <h3 class="font-bold text-lg text-blue-900 text-center">Votre informations</h3>
+                <input type="email" placeholder="adresse email" formControlName="adrMail" readonly
+                    class="input input-bordered input-success input-sm m-3 w-full max-w-xs" />
+                <input type="text" placeholder="votre nom" formControlName="nomUtil"
+                    class="input input-bordered input-success input-sm m-3 mt-5 w-full max-w-xs" />
+                <input type="text" placeholder="votre prenom" formControlName="prenomUtil"
+                    class="input input-bordered input-success input-sm m-3 w-full max-w-xs" />
+                <input type="text" placeholder="adresse" formControlName="adrUtil"
+                    class="input input-bordered input-success input-sm m-3 w-full max-w-xs" />
+                <input type="text" placeholder="numero telephone" formControlName="numPhone"
+                    class="input input-bordered input-success input-sm m-3 w-full max-w-xs" />
+                <input type="password" placeholder="votre mot de passe" formControlName="motPasse"
+                    class="input input-bordered input-success input-sm m-3 w-full max-w-xs" />
+                <input type="password" placeholder="confirmez votre mot de passe" formControlName="confirme"
+                    class="input input-bordered input-success input-sm m-3 w-full max-w-xs" />
+            </div>
+            <div class="modal-action">
+                <button type="submit" class="btn btn-xs bg-blue-900">CONFIRMER</button>
+                <button class="btn btn-xs btn-error" (click)="closeParams()">ANNULER</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- CONFIRMATION DU DECONNEXION -->
+<div class="fixed inset-0 flex items-center justify-center z-50" *ngIf="isDeconnexion">
+    <form method="dialog" class="modal-box" [formGroup]="confirmForm" (reset)="closeConfirm()" (submit)="deconnecter()">
+        <div class="alert">
+            <i class='bx bxs-info-circle'></i>
+            <span>VOULEZ VOUS DECONNECTER?</span>
+            <div>
+                <button type="reset" class="btn btn-xs btn-error">ANNULER</button>
+                <button type="submit" class="btn btn-xs bg-blue-900">ACCEPTER</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div>
+    <router-outlet></router-outlet>
+</div>

@@ -1,0 +1,92 @@
+<div class=" fixed top-0 z-10 navbar bg-blue-900 text-white">
+    <div class="navbar-start">
+        <div class="dropdown">
+            <label tabindex="0" class="btn btn-ghost btn-circle">
+                <i class='bx bx-menu-alt-left bx-sm'></i>
+            </label>
+            <ul tabindex="0"
+                class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow  bg-base-300 text-sky-950 rounded-box w-36">
+                <li class="rounded-md active:bg-secondary hover:bg-sky-800 hover:text-white">
+                    <a routerLink="/administrateur">Produits</a>
+                </li>
+                <li class="rounded-md active:bg-secondary hover:bg-sky-800 hover:text-white">
+                    <a routerLink="/administrateur/commande">Commandes</a>
+                </li>
+                <li class="rounded-md active:bg-secondary hover:bg-sky-800 hover:text-white">
+                    <a routerLink="/administrateur/commentaire">Commentaires</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="navbar-center">
+        <a class="btn btn-ghost normal-case text-xl">UNIT-COMMERCE</a>
+    </div>
+    <div class="navbar-end">
+        <span class="mr-14">
+            <i class="bx bx-user bx-xm">{{nomAdmin$ | async}}</i>
+        </span>
+        <button class="btn btn-ghost btn-circle" (click)="openModal()">
+            <i class='bx bxs-plus-circle bx-flashing bx-sm'></i>
+        </button>
+        <button class="btn btn-ghost btn-circle" (click)="openModalConfirm()">
+            <i class='bx bx-log-out-circle bx-sm'></i>
+        </button>
+    </div>
+</div>
+<!-- FORMULAIRE D' AJOUT PRODUIT -->
+<div class="fixed inset-0 flex items-center justify-center z-50" *ngIf="isModalOpen">
+    <form method="dialog" [formGroup]="ajoutProduitForm" (submit)="ajoutProduit($event)" class="modal-box">
+        <div class="modal-overlay"></div>
+        <div class="modal-container ">
+            <button class="modal-close btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
+                (click)="closeModal()">✕</button>
+            <div class="modal-content">
+                <h3 class="font-bold text-lg text-blue-900 text-center">AJOUTER DES NOUVELLES PRODUITS</h3>
+                <input type="text" placeholder="Entrer le nom du produit" formControlName="nomProd"
+                    class="input input-bordered input-success input-sm m-3 mt-5 w-full max-w-xs"
+                    (input)="controlechampText($event)" />
+                <input type="text" placeholder="Donner sa description" formControlName="descProd"
+                    class="input input-bordered input-success input-sm m-3 w-full max-w-xs"
+                    (input)="controlechampText($event)" />
+                <input type="text" placeholder="Catégorie" formControlName="categorieProd"
+                    class="input input-bordered input-success input-sm m-3 w-full max-w-xs"
+                    (input)="controlechampText($event)" />
+                <input type="text" placeholder="Prix" formControlName="prixProd" (input)="controleChampChiffre($event)"
+                    class="input input-bordered input-success input-sm m-3 w-full max-w-xs" />
+                <input type="text" placeholder="stock" formControlName="stockProd"
+                    (input)="controleChampChiffre($event)"
+                    class="input input-bordered input-success input-sm m-3 w-full max-w-xs" />
+                <input type="file" formControlName="imageProd" (change)="onFileSelected($event)" accept="image/*"
+                    class="file-input file-input-bordered file-input-sm m-3 file-input-accent w-full max-w-xs hidden"
+                    #fileInput />
+                <div class="w-32 h-32 overflow-hidden m-3">
+                    <button type="button" (click)="fileInput.click()"
+                        class="btn btn-outline btn-primary btn-xs rounded">Select
+                        image</button>
+                    <img [src]="imagePreviewUrl" alt=""
+                        class="rounded shadow w-24 h-24 max-w-full mt-1 max-h-full object-cover">
+                </div>
+            </div>
+            <div class="modal-action">
+                <button type="submit" class="btn btn-xs bg-blue-900" (click)="listeProduit()">AJOUTER</button>
+                <button class="btn btn-xs btn-error" (click)="closeModal()">ANNULER</button>
+            </div>
+        </div>
+    </form>
+</div>
+<!-- CONFIRMATION DU DECONNEXION -->
+<div class="fixed inset-0 flex items-center justify-center z-50" *ngIf="isDeconnexion">
+    <form method="dialog" class="modal-box" [formGroup]="confirmForm" (reset)="closeConfirm()" (submit)="deconnecter()">
+        <div class="alert">
+            <i class='bx bxs-info-circle'></i>
+            <span>VOULEZ VOUS DECONNECTER?</span>
+            <div>
+                <button type="reset" class="btn btn-xs btn-error">ANNULER</button>
+                <button type="submit" class="btn btn-xs bg-blue-900">ACCEPTER</button>
+            </div>
+        </div>
+    </form>
+</div>
+<div>
+    <router-outlet></router-outlet>
+</div>

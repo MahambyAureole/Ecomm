@@ -1,40 +1,7 @@
-<!-- NAV BAR DE L' APPLICATION -->
-<div class=" fixed top-0 z-10 navbar bg-blue-900 text-white">
-  <div class="navbar-start">
-    <div class="dropdown">
-      <label tabindex="0" class="btn btn-ghost btn-circle">
-        <i class='bx bx-menu-alt-left bx-sm'></i>
-      </label>
-      <ul tabindex="0"
-        class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow  bg-base-300 text-sky-950 rounded-box w-52">
-        <li class="rounded-md active:bg-secondary hover:bg-sky-800 hover:text-white">
-          <a routerLink="/accueil" routerLinkActive="active" ariaCurrentWhenActive="page">Produits</a>
-        </li>
-        <li class="rounded-md active:bg-secondary hover:bg-sky-800 hover:text-white"><a>Contact</a></li>
-        <li class="rounded-md active:bg-secondary hover:bg-sky-800 hover:text-white"><a href="#test">A Propos</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="navbar-center">
-    <a class="btn btn-ghost normal-case text-xl">UNIT-COMMERCE</a>
-  </div>
-  <div class="navbar-end">
-    <button class="btn btn-ghost btn-circle">
-      <i class='bx bx-search-alt-2 bx-sm'></i>
-    </button>
-    <button class="btn btn-ghost btn-circle">
-      <i class='bx bxs-moon bx-sm'></i>
-    </button>
-    <button class="btn btn-ghost btn-circle" (click)="openModal()">
-      <i class='bx bxs-plus-circle bx-flashing bx-sm'></i>
-    </button>
-  </div>
-</div>
-
 
 <!-- FORMULAIRE D' AJOUT PRODUIT -->
 <div class="fixed inset-0 flex items-center justify-center z-50" *ngIf="isModalOpen">
-  <form method="dialog" [formGroup]="ajoutProduitForm" (submit)="ajoutProduit($event)" class="modal-box">
+  <form method="dialog" [formGroup]="ajoutProduitForm" (submit)="getNomImage($event)" class="modal-box">
     <div class="modal-overlay"></div>
     <div class="modal-container ">
       <button class="modal-close btn btn-sm btn-circle btn-ghost absolute right-2 top-2"

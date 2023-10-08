@@ -1,0 +1,27 @@
+<div class="m-5 mt-20">
+  <h1 class="text-center mb-3  text-2xl font-serif">Listes des Commentaires réçu</h1>
+  <div class="overflow-x-auto flex justify-center">
+    <table class="table table-zebra table-auto">
+      <thead>
+        <tr>
+          <th></th>
+          <th>Utilisateur</th>
+          <th>Produit</th>
+          <th>Contenu</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let coms of commentaire" class="hover">
+          <th>{{coms.idComs}}</th>
+          <td class="text-center align-middle">{{coms.nomUtil}} {{coms.prenomUtil}}</td>
+          <td class="text-center align-middle">{{coms.nomProd}}</td>
+          <td class="text-center align-middle">{{coms.contenuComs}}</td>
+          <td>
+            <button class="btn btn-ghost btn-circle"><i class='bx bxs-trash bx-xm'></i></button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
