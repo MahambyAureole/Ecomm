@@ -170,6 +170,7 @@ export class ProduitComponent {
     }
   }
 
+
   // AJOUTER COMMENTAIRES
   ajoutCommentaire() {
     const commentaire = this.ajoutComs.value;

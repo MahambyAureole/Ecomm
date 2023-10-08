@@ -24,6 +24,9 @@ export class AdminComponent {
   file: File | undefined;
   nomAdmin$ = this.utilservice.getAdrMail();
   produit!: any[];
+  currentDate = new Date();
+  currentTime = new Date();
+  futureDate = new Date(this.currentDate.getTime());
 
 
   constructor(private router: Router, private location: Location,private utilservice:UtilisateurService, private service: ServiceBackService, private toastr: ToastrService, private formBuilder: FormBuilder, private http: HttpClient, private route: ActivatedRoute) {
@@ -88,6 +91,12 @@ export class AdminComponent {
   ngOnInit(): void {
     this.nomAdmin$.subscribe();
     this.fetchProduit();
+    setInterval(() => {
+      this.currentDate = new Date();
+    }, 1000);
+    setInterval(() => {
+      this.currentTime = new Date();
+    }, 1000);
   }
 
   // AJOUT PRODUIT

@@ -12,6 +12,7 @@ export class UtilisateurService {
   
   private data = new BehaviorSubject<string>('');
   private dt = new BehaviorSubject<number>(0);
+  private pr = new BehaviorSubject<number>(0);
 
   //Ajout Utilisateur
   ajoutUtil(utilisateur: any, options?: any): Observable<any>{
@@ -32,5 +33,13 @@ export class UtilisateurService {
 
   setIdUtilisateur(idUtil: number){
     this.dt.next(idUtil);
+  }
+
+  getIdProd(){
+    return this.data.asObservable();
+  }
+
+  setIdProd(idProd: number){
+    this.pr.next(idProd);
   }
 }

@@ -4,7 +4,6 @@
     <table class="table table-zebra table-auto">
       <thead>
         <tr>
-          <th></th>
           <th>Utilisateur</th>
           <th>Produit</th>
           <th>Contenu</th>
@@ -13,7 +12,6 @@
       </thead>
       <tbody>
         <tr *ngFor="let coms of commentaire" class="hover">
-          <th>{{coms.idComs}}</th>
           <td class="text-center align-middle">{{coms.nomUtil}} {{coms.prenomUtil}}</td>
           <td class="text-center align-middle">{{coms.nomProd}}</td>
           <td class="text-center align-middle">{{coms.contenuComs}}</td>

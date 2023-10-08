@@ -17,6 +17,9 @@ export class UsersComponent {
   confirmForm!: FormGroup;
   adrMail$ = this.service.getAdrMail();
   idUtil$ = this.service.getIdUtilisateur();
+  currentDate = new Date();
+  currentTime = new Date();
+  futureDate = new Date(this.currentDate.getTime());
 
   constructor(private router: Router, private panService: PanierService ,private service: UtilisateurService, private location: Location, private formBuilder: FormBuilder){
     this.parmsForm = this.formBuilder.group({
@@ -38,6 +41,12 @@ export class UsersComponent {
 
   ngOnInit(): void{
     this.adrMail$.subscribe();
+    setInterval(() => {
+      this.currentDate = new Date();
+    }, 1000);
+    setInterval(() => {
+      this.currentTime = new Date();
+    }, 1000);
   }
   deconnecter(){
       this.router.navigateByUrl("authentification");

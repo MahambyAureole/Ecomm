@@ -52,7 +52,7 @@ export class ServiceBackService {
   getIdUtil(user: any): Observable<any>{
     return this.http.post<any>(`${this.apiUrl}/getId`, user);
   }
-
+  
   // VERIFICATION DE L'ADMINISTRATEUR
   loginAdmin(admin: any): Observable<any>{
     return this.http.post<any>(`${this.apiUrl}/loginAdmin`, admin);

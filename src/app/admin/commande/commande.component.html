@@ -4,7 +4,6 @@
       <table class="table table-zebra table-auto">
         <thead>
           <tr>
-            <th></th>
             <th>Utilisateur</th>
             <th>Produit</th>
             <th>Quantité</th>
@@ -15,7 +14,6 @@
         </thead>
         <tbody>
           <tr *ngFor="let histo of historique" class="hover">
-            <th>{{histo.idCom}}</th>
             <td class="text-center align-middle"> {{histo.nomUtil}} {{histo.prenomUtil}}</td>
             <td class="text-center align-middle">{{histo.nomProd}}</td>
             <td class="text-center align-middle">{{histo.qttCom}}</td>
