@@ -78,10 +78,6 @@ export class AdminComponent {
       const fileName = this.file.name;
       const formData = new FormData();
       formData.append('file', this.file);
-      this.http.post('http://localhost:8080/uploadFile', formData)
-          .subscribe(res => {
-            console.log(res);
-          });
       console.log('Nom du fichier sélectionné :', fileName);
     } else {
       console.log("Aucun fichier sélectionné");

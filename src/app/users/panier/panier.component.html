@@ -1,37 +1,95 @@
 <div class="m-5 mt-20">
-    <h1 class="text-center mb-3  text-2xl font-serif">Listes des produits dans votre panier</h1>
-    <div class="overflow-x-auto flex justify-center">
-      <table class="table table-zebra table-auto w-36 z-0">
-        <thead>
-          <tr>
-            <th class="w-[4cm]">Utilisateur</th>
-            <th>Produit</th>
-            <th>Quantité</th>
-            <th>Prix Unitaire(Ariary)</th>
-            <th>Total(Ariary)</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let listepan of listePanier" class="hover">
-            <td class="text-center align-middle idUtil hidden">{{idUtil$ | async}}</td>
-            <td class="text-center align-middle">{{listepan.nomUtil}} {{listepan.prenomUtil}}</td>
-            <td class="text-center align-middle">{{listepan.nomProd}}</td>
-            <td class="text-center align-middle">{{listepan.qttPanier}}</td>
-            <td class="text-center align-middle">{{listepan.prixProd}}</td>
-            <td class="text-center align-middle">{{listepan.total}}</td>
-            <td>
-                <button class="btn btn-ghost btn-circle"><i class='bx bx-refresh bx-xm'></i></button>
-                <button class="btn btn-ghost btn-circle"><i class='bx bxs-trash bx-xm'></i></button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <tfoot >
-      <p class="font-bold ml-40 mt-2 font-serif"> Net à payer: {{somme}} Ariary</p>
-    </tfoot>
-    <div class="form-control mt-6 justify-center">
-      <button (click)="ajoutProd()" class="btn btn-outline btn-sm justify-center">Acheter</button>
+  <h1 class="text-center mb-3  text-2xl font-serif">Listes des produits dans votre panier</h1>
+  <div class="overflow-x-auto flex justify-center">
+    <table class="table table-zebra table-auto w-36 z-0">
+      <thead>
+        <tr>
+          <th class="w-[4cm]">Produit</th>
+          <th>Quantité</th>
+          <th>Prix Unitaire(Ariary)</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let listepan of listePanier" class="hover">
+          <td class="text-center align-middle hidden" [(ngModel)]="idPan">{{listepan.idPanier}}</td>
+          <td class="text-center align-middle idUtil hidden">{{idUtil$ | async}}</td>
+          <td class="text-center align-middle hidden">{{listepan.nomUtil}} {{listepan.prenomUtil}}</td>
+          <td class="text-center align-middle">{{listepan.nomProd}}</td>
+          <td class="text-center align-middle hidden">{{listepan.stockProd}}</td>
+          <td class="text-center align-middle hidden">{{listepan.idProd}}</td>
+          <td class="text-center align-middle">{{listepan.qttPanier}}</td>
+          <td class="text-center align-middle">{{listepan.prixProd}}</td>
+          <td class="text-center align-middle hidden">{{listepan.total}}</td>
+          <td>
+            <!-- <button class="btn btn-ghost btn-circle"><i class='bx bx-refresh bx-xm'></i></button> -->
+            <button class="btn btn-ghost btn-circle"
+              (click)="supprimerPanier(listepan.idPanier,listepan.qttPanier,listepan.stockProd,listepan.idProd)"><i
+                class='bx bxs-trash bx-xm'></i></button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div [class.hidden]="!showModalFacture" class="fixed z-10 inset-0 overflow-y-auto" aria-labelledby="modal-title"
+    role="dialog" aria-modal="true">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+      <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
+      <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+      <div
+        class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+          <div class="sm:flex sm:items-start">
+            <div class="mt-3 text-center sm:mt-0 sm:text-left">
+              <div id="imprimer" class=" py-4 bg-blue-100 text-black-800 font-bold">
+                <div class="px-6 py-3">
+                  <h4 class="text-sm leading-6">FACTURE D' ACHAR POUR: {{ listePanier[0].nomUtil }} {{ listePanier[0].prenomUtil }}</h4>
+                </div>
+                <table class="min-w-full divide-y bg-blue-100 divide-gray-200 border-separate">
+                  <thead class="bg-gray-50">
+                    <tr>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produit
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Quantité</th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prix
+                      </th>
+                      <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody class="bg-white divide-y divide-gray-200">
+                    <tr *ngFor="let listepan of listePanier">
+                      <td class="px-6 py-4 text-xs whitespace-nowrap">{{listepan.nomProd}}</td>
+                      <td class="px-6 py-4 text-xs whitespace-nowrap">{{listepan.qttPanier}}</td>
+                      <td class="px-6 py-4 text-xs whitespace-nowrap">{{listepan.prixProd}}</td>
+                      <td class="px-6 py-4 text-xs whitespace-nowrap">{{listepan.total}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+                <div class="px-6 py-3 text-blue-900 font-bold">
+                  <h6 class="text-sm">Net à payer : {{somme}} Ariary</h6>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+          <button type="button" (click)="imprimer()"
+            class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm">
+            Valider la commande
+          </button>
+          <button type="button"
+            class="mr-2 mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
+            (click)="fermerModalFacture()">
+            Fermer
+          </button>
+        </div>
+      </div>
     </div>
   </div>
+  <div class="form-control mt-6 justify-center">
+    <button (click)="ouvrirModalFacture()" class="btn btn-outline btn-sm justify-center">Acheter</button>
+  </div>
+  <!-- ajoutProd() -->
+</div>

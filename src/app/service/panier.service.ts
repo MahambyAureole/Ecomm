@@ -23,11 +23,19 @@ export class PanierService {
   //RECUPERER ID PROD
   getIdProd(prod: any): Observable<any> {
     const body = JSON.stringify(prod);
-    return this.http.post<any>(`${this.apiUrl}/getIdProd`, body,this.httpOptions)
+    return this.http.post<any>(`${this.apiUrl}/getIdProd`, body, this.httpOptions)
   }
 
-  ajouterCommande(commande: any):Observable<any>{
-    return this.http.post<any>(`${this.apiUrl}/ajoutCommande`,commande);
+  ajouterCommande(commande: any): Observable<any> {
+    return this.http.post<any>(`${this.apiUrl}/ajoutCommande`, commande);
+  }
+
+  deletePanierByIdUtil(idUtil: number): Observable<any> {
+    return this.http.delete(`http://localhost:8080/videPanier/${idUtil}`);
+  }
+
+  deletePanierById(idPan: number): Observable<any> {
+    return this.http.delete(`http://localhost:8080/effacePanier/${idPan}`);
   }
 
 }

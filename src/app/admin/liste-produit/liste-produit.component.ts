@@ -28,6 +28,7 @@ export class ListeProduitComponent {
   produit!: any[];
   panier!: any[];
   searchInput!: any;
+  file: File | undefined;
 
   //CONSTRUCTEUR
   constructor(private router: Router, private service: ServiceBackService, private toastr: ToastrService, private formBuilder: FormBuilder, private http: HttpClient, private route: ActivatedRoute) {
@@ -102,15 +103,6 @@ export class ListeProduitComponent {
     }
   }
 
-  // FONCTION POUR OUVRIR/FERMER LE MODALE D'AJOUT DU PRODUIT
-  openModal() {
-    this.isModalOpen = true;
-  }
-  closeModal() {
-    this.isModalOpen = false;
-    this.imagePreviewUrl = null;
-    this.fileInput.nativeElement.value = '';
-  }
 
   // FONCTION POUR OUVRIR/FERMER LE MODAL DE MODIFICATION DU PRODUIT
   openModalModif() { this.isModalOpenModif = true; }
@@ -139,6 +131,14 @@ export class ListeProduitComponent {
   fetchProduit() {
     this.service.listeProduit().subscribe(data => {
       this.produit = data;
+      if (this.produit) {
+        this.produit.forEach(prod => {
+          this.getImageProd(prod.idProd);
+        });
+      } else {
+        console.log("erreur");
+
+      }
     })
   }
 
@@ -162,62 +162,38 @@ export class ListeProduitComponent {
     });
   }
 
-  // AJOUT PRODUIT
-  ajoutProduit(event: Event) {
-    const produit = this.ajoutProduitForm.value;
-    // console.log(produit);
-    this.service.ajoutProduit(produit).subscribe(() => {
-      this.fetchProduit();
-      this.ajoutProduitForm.reset();
-      this.imagePreviewUrl = null;
-      this.fileInput.nativeElement.value = '';
-      this.toastr.success("Produit ajouté avec succès", "Notification", { positionClass: "toast-top-right", timeOut: 1000 });
+  // AFFICHAGE PRODUIT
+  images: { [key: number]: string } = {};
+  getImageProd(idProd: number) {
+    this.service.getImage(idProd).subscribe(data => {
+      let reader = new FileReader();
+      reader.addEventListener("load", () => {
+        this.images[idProd] = reader.result as string;
+      }, false);
+
+      if (data) {
+        reader.readAsDataURL(data);
+      }
     });
-    event.preventDefault();
-  }
-
-  // AJOUT PANIER
-  ajoutPanier() {
-    const panier = this.ajoutPanierForm.value;
-    const panierAjout = {
-      idUtil: panier.idUtilPan,
-      idProd: panier.idProdPan,
-      qttPanier: panier.qttProdPan
-    }
-    this.service.ajoutPanier(panierAjout).subscribe(() => {
-      this.listePanier();
-      this.ajoutPanierForm.reset();
-
-    })
-  }
-
-
-  //Liste panier
-  listePanier() {
-    this.service.afficherPanier().subscribe(data => {
-      this.panier = data;
-    })
   }
 
   // MODIFIER PRODUIT
   modifierProduit(event: Event) {
-    const produitModif = this.modifierProduitForm.value;
-    const produit = {
-      categorieProd: produitModif.categorieProdModif,
-      descProd: produitModif.descProdModif,
-      imageProd: produitModif.imageProdModif,
-      nomProd: produitModif.nomProdModif,
-      stockProd: produitModif.stockProdModif,
-      prixProd: produitModif.prixProdModif
-
-    }
-
-    const idProdModif: number = this.modifierProduitForm.controls['idProdModif'].value;
-    this.service.modifierProduit(idProdModif, produit).subscribe(() => {
-      this.fetchProduit();
-      this.closeModalModif();
-      this.toastr.success("Modification réussi", "Notification", { progressBar: true, progressAnimation: "increasing", positionClass: "toast-top-right", timeOut: 3000 });
-    });
+      const produitModif = this.modifierProduitForm.value;
+        const produit = {
+          categorieProd: produitModif.categorieProdModif,
+          descProd: produitModif.descProdModif,
+          imageProd: produitModif.imageProdModif,
+          nomProd: produitModif.nomProdModif,
+          stockProd: produitModif.stockProdModif,
+          prixProd: produitModif.prixProdModif
+        }
+        const idProdModif: number = this.modifierProduitForm.controls['idProdModif'].value;
+        this.service.modifierProduit(idProdModif, produit).subscribe(() => {
+          this.fetchProduit();
+          this.closeModalModif();
+          this.toastr.success("Modification réussi", "Notification", { progressBar: true, progressAnimation: "increasing", positionClass: "toast-top-right", timeOut: 3000 });
+        });
     event.preventDefault();
   }
 
@@ -232,30 +208,8 @@ export class ListeProduitComponent {
     });
   }
   // AFFICHAGE D'IMAGE AVANT D'AJOUTER
-  @ViewChild('fileInput') fileInput!: ElementRef;
-  imagePreviewUrl!: string | ArrayBuffer | null;
-  onFileSelected(event: any) {
-    const file: File | undefined = (event.target as HTMLInputElement).files?.[0];
-
-    if (file) {
-      const reader = new FileReader();
-
-      reader.onload = (e: any) => {
-        this.imagePreviewUrl = e.target.result;
-      }
-
-      reader.readAsDataURL(file);
-      const formData = new FormData();
-      formData.append('file', file);
-
-      this.http.post<any>('http://localhost:8080/api/images/upload', formData).subscribe(
-        (response) => {
-          this.imageUrl = response;
-        },
-        (error) => {
-          console.error("Erreur de l\'upload  de l\'image :", error);
-        }
-      );
-    }
+  onFileChange(event: any) {
+    const file = event.target.files[0];
+    this.modifierProduitForm.controls["imageProdModif"].setValue(file.name);
   }
 }

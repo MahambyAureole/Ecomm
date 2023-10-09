@@ -77,6 +77,10 @@ export class ServiceBackService {
   supprimerProduit(idProd: number):Observable<Object>{
     return this.http.delete(`${this.apiUrl}/effaceProd/${idProd}`);
   }
+  // AFFICHE IMAGE PRODUIT
+  getImage(idProd: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/image/${idProd}`, { responseType: 'blob' });
+  }
 
   // CONNEXION AJOUT ENTRE PANIER BACK ET FRONT
   ajoutPanier(panier: any): Observable<any>{

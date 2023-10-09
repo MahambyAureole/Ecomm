@@ -28,7 +28,8 @@ export class MenuComponent {
   utilisateur: any[] = [];
   produit!: any[];
   panier!: any[];
-
+  imageToShow!: string;
+  images: { [key: number]: string } = {};
 
   //CONSTRUCTEUR
   constructor(private router: Router, private service: ServiceBackService, private toastr: ToastrService, private formBuilder: FormBuilder, private http: HttpClient, private route: ActivatedRoute) {
@@ -141,6 +142,14 @@ export class MenuComponent {
   fetchProduit() {
     this.service.listeProduit().subscribe(data => {
       this.produit = data;
+      if (this.produit) {
+        this.produit.forEach(prod => {
+          this.getImageProd(prod.idProd);
+        });
+      } else {
+        console.log("erreur");
+
+      }
     })
   }
 
@@ -199,7 +208,7 @@ export class MenuComponent {
   listePanier() {
     this.service.afficherPanier().subscribe(data => {
       this.panier = data;
-    })
+    });
   }
 
   // MODIFIER PRODUIT
@@ -224,6 +233,19 @@ export class MenuComponent {
     event.preventDefault();
   }
 
+  // AFFICHAGE PRODUIT
+  getImageProd(idProd: number) {
+    this.service.getImage(idProd).subscribe(data => {
+      let reader = new FileReader();
+      reader.addEventListener("load", () => {
+        this.images[idProd] = reader.result as string;
+      }, false);
+
+      if (data) {
+        reader.readAsDataURL(data);
+      }
+    });
+  }
   // SUPPRIMER PRODUIT
   deleteProduit() {
     const idProdModif: number = this.modifierProduitForm.controls['idProdModif'].value;

@@ -105,12 +105,32 @@ export class ProduitComponent {
     this.isModalAjoutPanier = false;
   }
 
+  images: { [key: number]: string } = {};
+  getImageProd(idProd: number) {
+    this.service.getImage(idProd).subscribe(data => {
+      let reader = new FileReader();
+      reader.addEventListener("load", () => {
+        this.images[idProd] = reader.result as string;
+      }, false);
 
+      if (data) {
+        reader.readAsDataURL(data);
+      }
+    });
+  }
 
   // AFFICHAGE DE PRODUIT
   fetchProduit() {
     this.service.listeProduit().subscribe(data => {
       this.produit = data;
+      if (this.produit) {
+        this.produit.forEach(prod => {
+          this.getImageProd(prod.idProd);
+        });
+      } else {
+        console.log("erreur");
+
+      }
     })
   }
 

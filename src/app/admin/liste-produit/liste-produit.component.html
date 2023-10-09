@@ -14,54 +14,18 @@
 <!-- RECHERCHE PRODUIT -->
 <div class="form-control mt-20 ml-20">
     <div class="input-group">
-        <input type="text" placeholder="Recherche..." class="input input-bordered input-sm" (keyup)="searchProducts()" [(ngModel)]="searchInput" (input)="searchInput"/>
+        <input type="text" placeholder="Recherche..." class="input input-bordered input-sm" (keyup)="searchProducts()"
+            [(ngModel)]="searchInput" (input)="searchInput" />
         <button class="btn btn-square btn-sm">
             <i class='bx bx-search bx-sm' (click)="searchProducts()"></i>
         </button>
     </div>
 </div>
-<!-- FORMULAIRE D' AJOUT PRODUIT -->
-<div class="fixed inset-0 flex items-center justify-center z-50" *ngIf="isModalOpen">
-    <form method="dialog" [formGroup]="ajoutProduitForm" (submit)="ajoutProduit($event)" class="modal-box">
-        <div class="modal-overlay"></div>
-        <div class="modal-container ">
-            <button class="modal-close btn btn-sm btn-circle btn-ghost absolute right-2 top-2"
-                (click)="closeModal()">✕</button>
-            <div class="modal-content">
-                <h3 class="font-bold text-lg text-blue-900 text-center">AJOUTER DES NOUVELLES PRODUITS</h3>
-                <input type="text" placeholder="Entrer le nom du produit" formControlName="nomProd"
-                    class="input input-bordered input-success input-sm m-3 mt-5 w-full max-w-xs" />
-                <input type="text" placeholder="Donner sa description" formControlName="descProd"
-                    class="input input-bordered input-success input-sm m-3 w-full max-w-xs" />
-                <input type="text" placeholder="Catégorie" formControlName="categorieProd"
-                    class="input input-bordered input-success input-sm m-3 w-full max-w-xs" />
-                <input type="text" placeholder="Prix" formControlName="prixProd"
-                    class="input input-bordered input-success input-sm m-3 w-full max-w-xs" />
-                <input type="text" placeholder="stock" formControlName="stockProd"
-                    class="input input-bordered input-success input-sm m-3 w-full max-w-xs" />
-                <input type="file" formControlName="imageProd" (change)="onFileSelected($event)" accept="image/*"
-                    class="file-input file-input-bordered file-input-sm m-3 file-input-accent w-full max-w-xs hidden"
-                    #fileInput />
-                <div class="w-32 h-32 overflow-hidden m-3">
-                    <button type="button" (click)="fileInput.click()"
-                        class="btn btn-outline btn-primary btn-xs rounded">Select
-                        image</button>
-                    <img [src]="imagePreviewUrl" alt=""
-                        class="rounded shadow w-24 h-24 max-w-full mt-1 max-h-full object-cover">
-                </div>
-            </div>
-            <div class="modal-action">
-                <button type="submit" class="btn btn-xs bg-blue-900">AJOUTER</button>
-                <button class="btn btn-xs btn-error" (click)="closeModal()">ANNULER</button>
-            </div>
-        </div>
-    </form>
-</div>
 
 <!-- AFFICHAGE DES PRODUITS -->
 <div class="ml-14 grid grid-cols-4 space-x-3 space-y-3 m-3 rounded-md" *ngIf="produit">
     <div class="col-span-1 mt-3 ms-3 card pt-5 h-100 w-70 bg-gray-300" *ngFor="let prod of produit, let i = index">
-        <figure><img class="w-3/4" src="../assets/image/nokia 6.jpg" alt="{{prod.descProd}}" /></figure>
+        <figure><img class="w-3/4" [src]="images[prod.idProd]" alt="Image du produit {{prod.descProd}}" /></figure>
         <div class="card-body">
             <h2 class="card-title"
                 style="position: absolute;width: 1px;height: 1px;padding: 0;margin: -1px;overflow: hidden;clip: rect(0,0,0,0);border: 0;"
@@ -105,8 +69,8 @@
                     </div>
                 </div>
                 <div class="justify-start form-control">
-                    <button class="btn btn-sm active:btn-secondary w-full hover:bg-sky-800 bg-sky-800" style="font-size: x-small;"
-                        (click)="affecterValeur(i); openModalModif()">Action</button>
+                    <button class="btn btn-sm active:btn-secondary w-full hover:bg-sky-800 bg-sky-800"
+                        style="font-size: x-small;" (click)="affecterValeur(i); openModalModif()">Action</button>
                 </div>
             </div>
         </div>
@@ -145,9 +109,9 @@
                 <label class="label">
                     <span class="label-text font-bold">Image:</span>
                 </label>
-                <input type="text" formControlName="imageProdModif"
+                <input type="text" formControlName="imageProdModif" readonly
                     class="input input-bordered input-success input-sm ml-3 w-full max-w-xs" />
-                <input type="file" accept="image/*"
+                <input type="file" accept="image/*" (change)="onFileChange($event)"
                     class="file-input file-input-bordered file-input-sm m-3 file-input-accent w-full max-w-xs" />
                 <label class="label">
                     <span class="label-text font-bold">Prix(Ariary):</span>

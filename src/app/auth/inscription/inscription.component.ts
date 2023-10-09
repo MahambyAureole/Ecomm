@@ -78,4 +78,38 @@ export class InscriptionComponent {
     }
     event.preventDefault();
   }
+  //controle champ de texte, ne peut pas ecrire des chiffres
+  controlechampText(event: any) {
+    const inputValeur = event.target.value;
+    if (/[^A-Za-z0-9 ]/.test(inputValeur)) {
+      const index = inputValeur.search(/A-Za-z0-9 /)
+      const dernierMot = inputValeur.slice(0, index);
+      event.target.value = dernierMot;
+    }
+  }
+
+  controlenomText(event: any) {
+    const inputValeur = event.target.value;
+    if (/[^A-Za-z ]/.test(inputValeur)) {
+      const index = inputValeur.search(/A-Za-z /)
+      const dernierMot = inputValeur.slice(0, index);
+      event.target.value = dernierMot;
+    }
+  }
+
+  // controle champ de texte, ne peut pas ecrire des lettres
+  controleChampChiffre(event: any) {
+    const inputElement = event.target as HTMLInputElement;
+    const inputValue = inputElement.value;
+    if (/[^0-9]/.test(inputValue)) {
+      const index = inputValue.search(/[^0-9]/);
+      const dernierChiffre = inputValue.slice(0, index)
+      inputElement.value = dernierChiffre;
+    }
+  }
+
+  majuscule(event: any) {
+    const inputElement = event.target as HTMLInputElement;
+    inputElement.value = inputElement.value.toUpperCase();
+}
 }
